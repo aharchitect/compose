@@ -1,0 +1,21 @@
+{{- $src := .Get "src" -}}
+{{- $alt := .Get "alt" | default "" -}}
+{{- $caption := .Get "caption" -}}
+{{- $class := .Get "class" -}}
+{{- $width := .Get "width" | default "100%" -}}
+{{- $fullWidth := or (.Get "fullwidth") (.Get "fullWidth") -}}
+{{- $widthValue := $width -}}
+{{- if strings.HasSuffix $width "%" -}}
+  {{- $ratio := div (float (strings.TrimSuffix "%" $width)) 100 -}}
+  {{- $widthValue = printf "calc(var(--figure-content-width) * %v)" $ratio -}}
+{{- end -}}
+<figure
+  class="aha-figure{{ with $class }} {{ . }}{{ end }}{{ if $fullWidth }} aha-figure--fullwidth{{ end }}"
+  style="--figure-width: {{ $widthValue | safeCSS }};">
+  {{- with .Get "link" }}<a href="{{ . | safeURL }}"{{ with $.Get "target" }} target="{{ . }}"{{ end }}{{ with $.Get "rel" }} rel="{{ . }}"{{ end }}>{{ end -}}
+  <img src="{{ $src | safeURL }}" alt="{{ $alt }}" loading="lazy"{{ with .Get "title" }} title="{{ . }}"{{ end }}>
+  {{- with .Get "link" }}</a>{{ end -}}
+  {{- with $caption }}
+    <figcaption>{{ . | markdownify }}</figcaption>
+  {{- end }}
+</figure>

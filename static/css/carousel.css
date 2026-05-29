@@ -1,0 +1,349 @@
+.aha-carousel {
+  --carousel-cols: 1;
+  --carousel-gap: 1rem;
+  --carousel-content-width: 840px;
+  --carousel-width: 100%;
+  inline-size: min(100%, var(--carousel-width), var(--carousel-content-width));
+  margin: 1.75rem auto;
+  position: relative;
+}
+
+.aha-carousel--fullwidth {
+  --carousel-content-width: 100%;
+}
+
+.aha-carousel__viewport {
+  overflow: hidden;
+  inline-size: 100%;
+}
+
+.aha-carousel__track {
+  display: flex;
+  gap: var(--carousel-gap);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.aha-carousel__track::-webkit-scrollbar {
+  display: none;
+}
+
+.aha-carousel__track > * {
+  flex: 0 0 calc((100% - (var(--carousel-gap) * (var(--carousel-cols) - 1))) / var(--carousel-cols));
+  margin: 0;
+  min-inline-size: 0;
+  scroll-snap-align: start;
+}
+
+.aha-carousel figure,
+.aha-carousel img,
+.aha-carousel img:not(.icon) {
+  inline-size: 100%;
+  max-inline-size: 100%;
+}
+
+.aha-carousel img,
+.aha-carousel img:not(.icon) {
+  block-size: auto;
+  cursor: zoom-in;
+  display: block;
+  margin: 0 auto;
+}
+
+.aha-carousel figcaption {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.45;
+  padding-block-start: 0.65rem;
+  text-align: center;
+}
+
+.aha-carousel__button {
+  align-items: center;
+  background: var(--box-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  font-size: 1.65rem;
+  font-weight: 700;
+  block-size: 2.35rem;
+  inline-size: 2.35rem;
+  justify-content: center;
+  line-height: 1;
+  opacity: 0.92;
+  padding: 0 0 0.15rem;
+  position: absolute;
+  top: 45%;
+  transform: translateY(-50%);
+  transition: background-color 0.2s var(--ease), color 0.2s var(--ease), opacity 0.2s var(--ease);
+  z-index: 2;
+}
+
+.aha-carousel__button:hover,
+.aha-carousel__button:focus-visible {
+  background: var(--theme);
+  color: var(--dark);
+  opacity: 1;
+}
+
+.aha-carousel__button--prev {
+  left: 0.65rem;
+}
+
+.aha-carousel__button--next {
+  right: 0.65rem;
+}
+
+.aha-carousel__dots {
+  align-items: center;
+  display: flex;
+  gap: 0.45rem;
+  justify-content: center;
+  min-block-size: 1.75rem;
+  padding-block-start: 0.85rem;
+}
+
+.aha-carousel__dot {
+  background: transparent;
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  block-size: 0.72rem;
+  cursor: pointer;
+  inline-size: 0.72rem;
+  padding: 0;
+}
+
+.aha-carousel__dot[aria-current="true"] {
+  background: var(--theme);
+  border-color: var(--theme);
+}
+
+.aha-carousel-lightbox-open {
+  overflow: hidden;
+}
+
+.aha-carousel-lightbox[hidden] {
+  display: none;
+}
+
+.aha-carousel-lightbox {
+  align-items: center;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 4.5rem 5rem 3rem;
+  position: fixed;
+  z-index: 9999;
+}
+
+.aha-carousel-lightbox__content {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  inline-size: 100%;
+  max-block-size: 100%;
+  min-inline-size: 0;
+  overflow: auto;
+  padding-block: 0.5rem;
+}
+
+.aha-carousel-lightbox__image {
+  block-size: auto;
+  box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.45);
+  max-block-size: 78vh;
+  max-inline-size: min(96vw, 1400px);
+  object-fit: contain;
+}
+
+.aha-carousel-lightbox__image--zoomed {
+  cursor: zoom-out;
+  max-block-size: none;
+  max-inline-size: none;
+}
+
+.aha-carousel-lightbox__caption,
+.aha-carousel-lightbox__counter {
+  color: var(--light);
+  margin: 0 auto;
+  max-inline-size: min(92vw, 900px);
+  text-align: center;
+}
+
+.aha-carousel-lightbox__caption {
+  font-size: 0.95rem;
+  line-height: 1.45;
+  padding-block-start: 1rem;
+}
+
+.aha-carousel-lightbox__counter {
+  color: var(--muted);
+  font-size: 0.82rem;
+  padding-block-start: 0.4rem;
+}
+
+.aha-carousel-lightbox__tools {
+  display: flex;
+  gap: 0.55rem;
+  inset-block-start: 1.25rem;
+  inset-inline-end: 1.25rem;
+  position: fixed;
+  z-index: 1;
+}
+
+.aha-carousel-lightbox__hint {
+  background: rgba(36, 38, 42, 0.9);
+  border: 1px solid rgba(240, 243, 247, 0.26);
+  border-radius: 999px;
+  color: var(--light);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  inset-block-start: 1.25rem;
+  inset-inline-start: 50%;
+  line-height: 1.3;
+  max-inline-size: min(70vw, 34rem);
+  padding: 0.55rem 0.85rem;
+  position: fixed;
+  transform: translateX(-50%);
+  transition: background-color 0.2s var(--ease), border-color 0.2s var(--ease), color 0.2s var(--ease);
+  z-index: 1;
+}
+
+.aha-carousel-lightbox__hint:hover,
+.aha-carousel-lightbox__hint:focus-visible {
+  background: var(--theme);
+  border-color: var(--theme);
+  color: var(--dark);
+  outline: none;
+}
+
+.aha-carousel-lightbox__close,
+.aha-carousel-lightbox__tool,
+.aha-carousel-lightbox__button {
+  align-items: center;
+  background: rgba(36, 38, 42, 0.86);
+  border: 1px solid rgba(240, 243, 247, 0.3);
+  border-radius: 50%;
+  color: var(--light);
+  cursor: pointer;
+  display: flex;
+  font-weight: 700;
+  justify-content: center;
+  line-height: 1;
+  position: fixed;
+  transition: background-color 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.aha-carousel-lightbox__close:hover,
+.aha-carousel-lightbox__close:focus-visible,
+.aha-carousel-lightbox__tool:hover,
+.aha-carousel-lightbox__tool:focus-visible,
+.aha-carousel-lightbox__button:hover,
+.aha-carousel-lightbox__button:focus-visible {
+  background: var(--theme);
+  border-color: var(--theme);
+  color: var(--dark);
+  outline: none;
+}
+
+.aha-carousel-lightbox__tool:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.aha-carousel-lightbox__tool:disabled:hover {
+  background: rgba(36, 38, 42, 0.86);
+  border-color: rgba(240, 243, 247, 0.3);
+  color: var(--light);
+}
+
+.aha-carousel-lightbox__close {
+  block-size: 2.5rem;
+  font-size: 1.8rem;
+  inline-size: 2.5rem;
+  padding-block-end: 0.18rem;
+  position: static;
+}
+
+.aha-carousel-lightbox__tool {
+  block-size: 2.5rem;
+  font-size: 1.45rem;
+  inline-size: 2.5rem;
+  position: static;
+}
+
+.aha-carousel-lightbox__button {
+  block-size: 3rem;
+  font-size: 2.2rem;
+  inline-size: 3rem;
+  inset-block-start: 50%;
+  padding-block-end: 0.18rem;
+  transform: translateY(-50%);
+}
+
+.aha-carousel-lightbox__button--prev {
+  inset-inline-start: 1.25rem;
+}
+
+.aha-carousel-lightbox__button--next {
+  inset-inline-end: 1.25rem;
+}
+
+@media (max-width: 720px) {
+  .aha-carousel {
+    --carousel-cols: 1 !important;
+    inline-size: 100%;
+  }
+
+  .aha-carousel__button {
+    block-size: 2rem;
+    font-size: 1.35rem;
+    inline-size: 2rem;
+  }
+
+  .aha-carousel-lightbox {
+    padding: 4rem 1rem 2rem;
+  }
+
+  .aha-carousel-lightbox__image {
+    max-block-size: 70vh;
+  }
+
+  .aha-carousel-lightbox__button {
+    block-size: 2.35rem;
+    font-size: 1.7rem;
+    inline-size: 2.35rem;
+  }
+
+  .aha-carousel-lightbox__tools {
+    gap: 0.4rem;
+    inset-block-start: 0.75rem;
+    inset-inline-end: 0.75rem;
+  }
+
+  .aha-carousel-lightbox__hint {
+    inset-block-start: 3.55rem;
+    max-inline-size: calc(100vw - 2rem);
+    white-space: normal;
+  }
+
+  .aha-carousel-lightbox__close,
+  .aha-carousel-lightbox__tool {
+    block-size: 2.2rem;
+    inline-size: 2.2rem;
+  }
+
+  .aha-carousel-lightbox__button--prev {
+    inset-inline-start: 0.5rem;
+  }
+
+  .aha-carousel-lightbox__button--next {
+    inset-inline-end: 0.5rem;
+  }
+}

@@ -1,0 +1,34 @@
+{{- $author := "" -}}
+{{- $source := "" -}}
+{{- $url := "" -}}
+{{- $variant := "" -}}
+{{- if .IsNamedParams -}}
+  {{- $author = .Get "author" -}}
+  {{- $source = or (.Get "source") (.Get "cite") -}}
+  {{- $url = .Get "url" -}}
+  {{- $variant = .Get "variant" -}}
+{{- else -}}
+  {{- if ge (len .Params) 1 -}}{{- $author = index .Params 0 -}}{{- end -}}
+  {{- if ge (len .Params) 2 -}}{{- $source = index .Params 1 -}}{{- end -}}
+  {{- if ge (len .Params) 3 -}}{{- $url = index .Params 2 -}}{{- end -}}
+  {{- if ge (len .Params) 4 -}}{{- $variant = index .Params 3 -}}{{- end -}}
+{{- end -}}
+<figure class="quote{{ with $variant }} quote_{{ . }}{{ end }}">
+  <blockquote class="quote_body">
+    {{- markdownify .Inner -}}
+    {{- if or $author $source -}}
+    <footer class="quote_caption">
+      <span class="quote_origin">Source: </span>
+      {{- with $author -}}<span class="quote_author">{{ . }}</span>{{- end -}}
+      {{- with $source -}}
+        {{- if $author -}}<span class="quote_separator">, </span>{{- end -}}
+        {{- if $url -}}
+          <cite class="quote_source"><a href="{{ $url }}" rel="noreferrer noopener">{{ . }}</a></cite>
+        {{- else -}}
+          <cite class="quote_source">{{ . }}</cite>
+        {{- end -}}
+      {{- end -}}
+    </footer>
+    {{- end -}}
+  </blockquote>
+</figure>

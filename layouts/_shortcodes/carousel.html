@@ -1,0 +1,29 @@
+{{- $cols := .Get "cols" | default (.Get "items") | default 1 -}}
+{{- $width := .Get "width" | default "100%" -}}
+{{- $fullWidth := or (.Get "fullwidth") (.Get "fullWidth") -}}
+{{- $duration := .Get "duration" | default 0 -}}
+{{- $label := .Get "label" | default "Image carousel" -}}
+{{- $widthValue := $width -}}
+{{- if strings.HasSuffix $width "%" -}}
+  {{- $ratio := div (float (strings.TrimSuffix "%" $width)) 100 -}}
+  {{- $widthValue = printf "calc(var(--carousel-content-width) * %v)" $ratio -}}
+{{- end -}}
+{{- if not (.Page.Scratch.Get "carouselAssets") -}}
+  <link rel="stylesheet" href="{{ "css/carousel.css" | relURL }}">
+  <script src="{{ "js/carousel.js" | relURL }}" defer></script>
+  {{- .Page.Scratch.Set "carouselAssets" true -}}
+{{- end -}}
+<div
+  class="aha-carousel{{ if $fullWidth }} aha-carousel--fullwidth{{ end }}"
+  style="--carousel-cols: {{ $cols }}; --carousel-width: {{ $widthValue | safeCSS }};"
+  data-duration="{{ $duration }}"
+  aria-label="{{ $label }}">
+  <div class="aha-carousel__viewport">
+    <div class="aha-carousel__track">
+      {{ .Inner | safeHTML }}
+    </div>
+  </div>
+  <button class="aha-carousel__button aha-carousel__button--prev" type="button" aria-label="Previous slide">‹</button>
+  <button class="aha-carousel__button aha-carousel__button--next" type="button" aria-label="Next slide">›</button>
+  <div class="aha-carousel__dots" aria-label="Choose slide"></div>
+</div>

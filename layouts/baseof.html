@@ -10,6 +10,9 @@
   {{- partial "head/index" . }}
 </head>
 <body class="page-{{ .Kind }}" id="pagetop">
+  {{- if or (.Param "Victor_Hugo") (.Param "victor_hugo") -}}
+    {{- partial "victorhugo" . -}}
+  {{- end -}}
   <header class="nav_header">
     {{- partial "nav" . }}
   </header>
