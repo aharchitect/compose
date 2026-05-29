@@ -10,6 +10,114 @@ function findQuery(query = 'query') {
   return url_params.has(query) ? url_params.get(query) : empty_string;
 }
 
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function countOccurrences(text = empty_string, query = empty_string) {
+  if(!query.length) {
+    return 0;
+  }
+
+  const matches = text.match(new RegExp(escapeRegExp(query), 'gi'));
+  return matches ? matches.length : 0;
+}
+
+function decodeHtmlEntities(text = empty_string) {
+  const decoder = createEl('textarea');
+  decoder.innerHTML = text;
+  return decoder.value;
+}
+
+function getBodyMatch(result) {
+  if(!result.matches) {
+    return null;
+  }
+
+  return result.matches.find(match => match.key === 'body' && match.indices.length);
+}
+
+function getSentenceSnippet(text = empty_string, query = empty_string, match = null) {
+  const fallback_index = text.toLowerCase().indexOf(query.toLowerCase());
+  const match_index = fallback_index > -1 ? fallback_index : match ? match.indices[0][0] : fallback_index;
+
+  if(match_index < 0) {
+    return text.substring(0, 220);
+  }
+
+  const sentence_start = text.lastIndexOf('.', match_index);
+  const question_start = text.lastIndexOf('?', match_index);
+  const exclamation_start = text.lastIndexOf('!', match_index);
+  const start = Math.max(sentence_start, question_start, exclamation_start);
+  const sentence_endings = [
+    text.indexOf('.', match_index),
+    text.indexOf('?', match_index),
+    text.indexOf('!', match_index),
+  ].filter(index => index > -1);
+  const end = sentence_endings.length ? Math.min.apply(null, sentence_endings) + 1 : match_index + 220;
+  const snippet = text.substring(start > -1 ? start + 1 : 0, end).trim();
+
+  return snippet.length > 220 ? `${snippet.substring(0, 217).trim()}...` : snippet;
+}
+
+function appendHighlightedText(element, text = empty_string, query = empty_string) {
+  if(!query.length) {
+    element.textContent = text;
+    return;
+  }
+
+  const normalized_text = text.toLowerCase();
+  const normalized_query = query.toLowerCase();
+  let index = 0;
+  let match_index = normalized_text.indexOf(normalized_query, index);
+
+  if(match_index < 0) {
+    element.textContent = text;
+    return;
+  }
+
+  while(match_index > -1) {
+    if(match_index > index) {
+      element.appendChild(document.createTextNode(text.substring(index, match_index)));
+    }
+
+    const mark = createEl('mark');
+    mark.textContent = text.substring(match_index, match_index + query.length);
+    element.appendChild(mark);
+
+    index = match_index + query.length;
+    match_index = normalized_text.indexOf(normalized_query, index);
+  }
+
+  if(index < text.length) {
+    element.appendChild(document.createTextNode(text.substring(index)));
+  }
+}
+
+function hasSelectedQuickLink() {
+  const active_result = elem(`.${search_result_class}.active`);
+  return active_result && active_result.closest('.search_results');
+}
+
+function prepareFullSearchResults(results = [], query = empty_string) {
+  const seen_links = new Set();
+
+  return results
+    .map(function(result) {
+      result.decoded_body = decodeHtmlEntities(result.body);
+      result.occurrence_count = countOccurrences(result.decoded_body, query);
+      return result;
+    })
+    .filter(function(result) {
+      if(result.occurrence_count < 1 || seen_links.has(result.link)) {
+        return false;
+      }
+
+      seen_links.add(result.link);
+      return true;
+    });
+}
+
 function search(index, scope = null, passive = false) {
   scope = search_scope_global ? null : scope;
   if(search_term.length) {
@@ -20,6 +128,7 @@ function search(index, scope = null, passive = false) {
         const score = result.score;
         const result_item = result.item;
         result_item.score = (parseFloat(score) * 50).toFixed(0);
+        result_item.matches = result.matches;
         return result_item;
       })
     }
@@ -45,7 +154,7 @@ function liveSearch(index) {
     if(!search_page_element) {
       search_field.addEventListener('keyup', function(event){
         search_term = search_field.value.trim().toLowerCase();
-        if(search_term.length && event.keyCode === 13)  {
+        if(search_term.length && event.keyCode === 13 && !hasSelectedQuickLink())  {
           const scope_parameter = search_scope ? `&scope=${search_scope}` : empty_string;
           window.location.href = new URL(`search/?query=${search_term}${ scope_parameter }`, root_url).href;
         }
@@ -57,7 +166,8 @@ function liveSearch(index) {
 function searchResults(results=[], query=empty_string, passive = false) {
   let results_fragment = new DocumentFragment();
   let show_results = elem('.search_results');
-  if(passive || search_page_element) {
+  const is_search_page = passive || search_page_element;
+  if(is_search_page) {
     show_results = search_page_element;
   }
   emptyEl(show_results);
@@ -65,8 +175,12 @@ function searchResults(results=[], query=empty_string, passive = false) {
   const query_len = query.length;
   const required_query_len = minQueryLen(query);
 
+  if(is_search_page && results.length && query_len >= required_query_len) {
+    results = prepareFullSearchResults(results, query);
+  }
+
   if(results.length && query_len >= required_query_len) {
-    let results_title = createEl('h3');
+    let results_title = createEl(is_search_page ? 'h1' : 'h3');
     results_title.className = 'search_title';
     results_title.innerText = quick_links;
 
@@ -89,16 +203,21 @@ function searchResults(results=[], query=empty_string, passive = false) {
       item.href = `${result.link}?query=${query}`;
       item.className = search_result_class;
       item.style.order = result.score;
-      if (passive) {
+      if (is_search_page) {
         pushClass(item, 'passive');
         let item_title = createEl('h3');
         item_title.textContent = result.title;
         item.appendChild(item_title);
 
+        let item_meta = createEl('span');
+        const result_body = result.decoded_body || decodeHtmlEntities(result.body);
+        const occurrence_count = result.occurrence_count || countOccurrences(result_body, query);
+        item_meta.className = 'search_count';
+        item_meta.textContent = occurrence_count === 1 ? '1 occurrence' : `${occurrence_count} occurrences`;
+        item.appendChild(item_meta);
+
         let item_description = createEl('p');
-        // position of first search term instance
-        let query_instance = result.body.indexOf(query);
-        item_description.textContent = `${result.body.substring(query_instance, query_instance + 200)}`;
+        appendHighlightedText(item_description, getSentenceSnippet(result_body, query, getBodyMatch(result)), query);
         item.appendChild(item_description);
       } else {
         item.textContent = result.title;
@@ -221,7 +340,11 @@ function tabOverSearchResults() {
       return;
     }
 
-    window.location.href = results[selected === -1 ? 0 : selected].href;
+    if(selected === -1) {
+      return;
+    }
+
+    window.location.href = results[selected].href;
     return;
   });
 }

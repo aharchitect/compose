@@ -27,6 +27,7 @@ search_keys = search_keys.concat(other_searchable_fields);
 const search_options = {
   ignoreLocation: true,
   findAllMatches: true,
+  includeMatches: true,
   includeScore: true,
   shouldSort: true,
   keys: search_keys,

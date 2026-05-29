@@ -4,7 +4,7 @@
 {{- range site.Pages -}}
   {{- $params := .Params -}}
   {{- if ne .Type "search" -}}
-    {{- $searchEntry := dict "title" .Title "body" .Plain "link" .Permalink "section" .Section -}}
+    {{- $searchEntry := dict "title" .Title "body" (htmlUnescape .Plain) "link" .Permalink "section" .Section -}}
     {{- range $i, $value := $searchableExtras -}}
       {{- $extraFieldValue := index $params $value -}}
       {{- $extraFieldValues := dict -}}
