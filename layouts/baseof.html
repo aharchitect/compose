@@ -10,7 +10,7 @@
   {{- partial "head/index" . }}
 </head>
 <body class="page-{{ .Kind }}" id="pagetop">
-  {{- if or (.Param "Victor_Hugo") (.Param "victor_hugo") -}}
+  {{- if templates.Exists "partials/victorhugo.html" -}}
     {{- partial "victorhugo" . -}}
   {{- end -}}
   <header class="nav_header">
