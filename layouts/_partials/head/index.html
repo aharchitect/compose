@@ -1,14 +1,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 {{- hugo.Generator }}
-{{- $iconsPath := "favicons/" }}
-<link rel="apple-touch-icon" sizes="180x180" href='{{ absURL (printf "%sapple-touch-icon.png" $iconsPath) }}'>
-<link rel="icon" type="image/png" sizes="32x32" href='{{ absURL (printf "%sfavicon-32x32.png" $iconsPath) }}'>
-<link rel="icon" type="image/png" sizes="16x16" href='{{ absURL (printf "%sfavicon-16x16.png" $iconsPath) }}'>
-<link rel="manifest" href='{{ absURL (printf "%ssite.webmanifest" $iconsPath) }}'>
-<link rel="mask-icon" href='{{ absURL (printf "%ssafari-pinned-tab.svg" $iconsPath) }}' color="#004750">
-<link rel="shortcut icon" href='{{ absURL (printf "%sfavicon.ico" $iconsPath) }}'>
-<meta name="msapplication-config" content='{{ absURL (printf "%sbrowserconfig.xml" $iconsPath) }}'>
+{{- $config := site.Params }}
+{{- $assets := $config.assets }}
+{{- $iconsPath := default "favicons/" $assets.faviconsPath }}
+{{- $favicon := default (printf "%sfavicon.ico" $iconsPath) $assets.favicon }}
+{{- $faviconSvg := default (printf "%sfavicon.svg" $iconsPath) $assets.faviconSvg }}
+{{- $faviconPng := default (printf "%sfavicon-96x96.png" $iconsPath) $assets.faviconPng }}
+{{- $appleTouchIcon := default (printf "%sapple-touch-icon.png" $iconsPath) $assets.appleTouchIcon }}
+{{- $manifest := default (printf "%ssite.webmanifest" $iconsPath) $assets.manifest }}
+{{- with $appleTouchIcon }}<link rel="apple-touch-icon" sizes="180x180" href="{{ . | absURL }}">{{ end }}
+{{- with $faviconSvg }}<link rel="icon" type="image/svg+xml" href="{{ . | absURL }}">{{ end }}
+{{- with $faviconPng }}<link rel="icon" type="image/png" sizes="96x96" href="{{ . | absURL }}">{{ end }}
+{{- with $favicon }}<link rel="shortcut icon" href="{{ . | absURL }}">{{ end }}
+{{- with $manifest }}<link rel="manifest" href="{{ . | absURL }}">{{ end }}
 {{- $t := .Title }}
 {{- $s := site.Title }}
 {{- if in (lower $s) (lower $t) }}
@@ -29,7 +34,6 @@
 css.Sass $options | fingerprint "sha512" }}
 <link rel="stylesheet" href="{{ $styles.Permalink }}"{{ if hugo.IsProduction }} integrity="{{ $styles.Data.Integrity }}"{{ end }}>
 
-{{- $config := site.Params }}
 {{- with $config.customCSS }}
 {{- range . -}}
 <link rel="stylesheet" href="{{ . }}">
