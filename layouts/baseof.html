@@ -6,7 +6,8 @@
 {{- $doc_sections := default "docs" $config.docSections -}}
 {{- $unique_homepage := and $config.uniqueHomepage .IsHome -}}
 {{- $is_doc_page := and (in $doc_sections .Section) (not $unique_homepage) -}}
-{{- $is_unwrapped := or (eq .Section $config.blogDir) (eq .Type "search") (eq .Params.layout "landing") -}}
+{{- $post_sections := default (slice $config.blogDir) $config.postSections -}}
+{{- $is_unwrapped := or (in $post_sections .Section) (eq .Type "search") (eq .Params.layout "landing") -}}
 <!doctype html>
 <html lang={{ $lang }}{{ with $is_dark }} class=dark{{ end }}{{ with $default_mode }} data-mode={{ . }}{{ end }} itemscope itemtype={{ $item_type }}>
 <head>

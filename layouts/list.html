@@ -1,7 +1,7 @@
 {{- define "main" }}
-  {{- $blog := site.Params.blogDir }}
-  {{- if eq .Section $blog }}
-    {{- $pages := where site.RegularPages "Section" $blog }}
+  {{- $postSections := default (slice site.Params.blogDir) site.Params.postSections }}
+  {{- if in $postSections .Section }}
+    {{- $pages := where site.RegularPages "Section" .Section }}
     <div class="wrap pt-2 mt-2">
       {{- $paginator := .Paginate $pages -}}
       {{- $size := $paginator.PagerSize }}

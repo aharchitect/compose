@@ -1,6 +1,6 @@
 {{- define "main" }}
-	{{- $blog := site.Params.blogDir }}
-	{{- if eq .Section $blog }}
+	{{- $postSections := default (slice site.Params.blogDir) site.Params.postSections }}
+	{{- if in $postSections .Section }}
 		<div class="wrap mt post">
 			<div>
 				<header class="post_header">
