@@ -1,7 +1,7 @@
 {{- define "main" }}
 	{{- $postSections := default (slice site.Params.blogDir) site.Params.postSections }}
 	{{- if in $postSections .Section }}
-		<div class="wrap mt post">
+		<main class="wrap mt post">
 			<div>
 				<header class="post_header">
 					{{- partial "breadcrumb.html" . -}}
@@ -49,7 +49,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</main>
 	{{ else }}
 		<div class="content">
 			<h1>{{ .Title }}</h1>
