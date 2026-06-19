@@ -1,7 +1,7 @@
 <h{{ .Level }} id="{{ .Anchor }}" class=link_owner>
   {{ .Text | safeHTML }}
-  <a href="#{{ .Anchor }}" class="link icon">
-    <svg>
+  <a href="#{{ .Anchor }}" class="link icon" aria-label="Link to {{ .Text | plainify }}">
+    <svg aria-hidden="true" focusable="false">
       <use xlink:href="#anchor-link"></use>
     </svg>
   </a>
