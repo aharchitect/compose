@@ -74,9 +74,9 @@ setTimeout(() => {
 
 function updateDate() {
   const date = new Date();
-  const year = date.getFullYear().toString;
+  const year = date.getFullYear().toString();
   const year_el = elem('.year');
-  year_el ? year.textContent = year : false;
+  year_el ? year_el.textContent = year : false;
 }
 
 function customizeSidebar() {
@@ -251,4 +251,4 @@ function loadActions() {
   });
 }
 
-window.addEventListener('load', loadActions());
+window.addEventListener('load', loadActions);
