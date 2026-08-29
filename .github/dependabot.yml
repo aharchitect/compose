@@ -19,3 +19,4 @@ updates:
     directory: "/exampleSite"
     schedule:
       interval: weekly
+      
