@@ -28,7 +28,7 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
       with:
         submodules: true  # Fetch Hugo themes (true OR recursive)
         fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
@@ -54,7 +54,7 @@ jobs:
     steps:
     # Check out the site branch this time since we have to ultimately commit those changes there.
     - name: Checkout site branch
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
       with:
         submodules: true
         fetch-depth: 0
