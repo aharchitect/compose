@@ -83,7 +83,7 @@ jobs:
     # Push those changes back to the site branch.
     - name: Push to site branch
       if: steps.nothing_committed.conclusion == 'skipped'
-      uses: ad-m/github-push-action@v1.0.0
+      uses: ad-m/github-push-action@v1.3.0
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ env.SITE-BRANCH }}
