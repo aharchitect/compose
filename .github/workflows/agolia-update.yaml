@@ -18,7 +18,7 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
       with:
         submodules: true  # Fetch Hugo themes (true OR recursive)
         fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
@@ -44,7 +44,7 @@ jobs:
     steps:
     # Check out the site branch this time since we have to ultimately commit those changes there.
     - name: Checkout site branch
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
       with:
         submodules: true
         fetch-depth: 0
@@ -93,7 +93,7 @@ jobs:
         ALGOLIA_ADMIN_API_KEY: ${{ secrets.ALGOLIA_ADMIN_KEY }}
       run: |
         algolia index clear dimi_site --confirm
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
       with:
         fetch-depth: 0
     - uses: wangchucheng/algolia-uploader@v0.1.0
