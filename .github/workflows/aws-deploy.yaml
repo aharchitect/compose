@@ -43,7 +43,7 @@ jobs:
       run: hugo -e "production" -d "dist" -s "exampleSite" --minify
     # If build succeeds, store the dist/ dir as an artifact to be used in subsequent phases.
     - name: Upload output public dir as artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: public
         path: dist/
