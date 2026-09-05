@@ -51,7 +51,7 @@ jobs:
         ref: ${{ env.SITE-BRANCH }}
     # Download the artifact containing the newly built site. This overwrites the dist/ dir from the check out above.
     - name: Download artifact from build stage
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: dist
     # Add all the files/changes in dist/ that were pulled down from the build stage and then commit them.
